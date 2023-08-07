@@ -1,32 +1,54 @@
-import { Injectable } from '@nestjs/common';
-import { SupabaseService } from '../supabase.service';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { SupabaseService } from '../supabase/supabase.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly supabase: SupabaseService) {}
+  constructor(
+    private readonly supabase: SupabaseService,
+    private readonly prisma: PrismaService,
+  ) {}
+
   async signIn(email: string, password: string) {
     const { data, error } = await this.supabase.client.auth.signInWithPassword({
       email,
       password,
     });
+
     if (error) {
-      throw new Error('Authentication failed');
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
+
     // Puedes devolver el usuario o el token de sesión según tus necesidades.
     const { user, session } = data;
     return { user, session };
   }
-  async signUp(email: string, password: string) {
+
+  async signUp(email: string, password: string, username: string) {
     const { data, error } = await this.supabase.client.auth.signUp({
       email,
       password,
     });
+
     if (error) {
-      throw new Error('Sign-up failed');
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
+
+    // Está bien este try catch? Ta raro.
+    try {
+      const publicUser = await this.prisma.users.create({
+        data: { email, id: data.user.id, username },
+      });
+
+      console.log('publicUser', publicUser);
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
+
     const { user } = data;
     return { user };
   }
+
   async signOut() {
     await this.supabase.client.auth.signOut();
   }

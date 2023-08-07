@@ -5,8 +5,8 @@ export class SupabaseService {
   private readonly supabaseClient: SupabaseClient;
   constructor() {
     this.supabaseClient = createClient(
-      process.env.SUPABASE_URL, // Debes configurar esta variable en tu archivo .env
-      process.env.SUPABASE_KEY, // Debes configurar esta variable en tu archivo .env
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_KEY,
     );
   }
   get client(): SupabaseClient {
