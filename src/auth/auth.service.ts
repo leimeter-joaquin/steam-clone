@@ -25,28 +25,26 @@ export class AuthService {
   }
 
   async signUp(email: string, password: string, username: string) {
-    const { data, error } = await this.supabase.client.auth.signUp({
-      email,
-      password,
-    });
-
-    if (error) {
-      throw new HttpException(error, HttpStatus.BAD_REQUEST);
-    }
-
-    // Está bien este try catch? Ta raro.
     try {
-      const publicUser = await this.prisma.users.create({
+      const { data, error } = await this.supabase.client.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw new HttpException(error, HttpStatus.BAD_REQUEST);
+      }
+
+      await this.prisma.users.create({
         data: { email, id: data.user.id, username },
       });
 
-      console.log('publicUser', publicUser);
+      const { user } = data;
+
+      return { user };
     } catch (error) {
       throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
-
-    const { user } = data;
-    return { user };
   }
 
   async signOut() {
