@@ -20,7 +20,6 @@ export class AuthController {
   @Post('sign-in')
   @HttpCode(HttpStatus.OK)
   async signin(@Body() body: SignInBody) {
-    // TODO: session.
     const { user, session } = await this.authService.signIn(
       body.email,
       body.password,
