@@ -74,4 +74,4 @@ Nest is [MIT licensed](LICENSE).
 
 ## Versioned
 by Joaco Leimeter
-by Facu de Lafuente
+and Facu de Lafuente
