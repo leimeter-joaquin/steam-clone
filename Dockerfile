@@ -25,12 +25,6 @@ ENV SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsI
 
 RUN pnpm run build
 
-RUN npx prisma generate
-
-EXPOSE 3000
-
-ENV PORT 3000
+EXPOSE 3001
 
 CMD [ "node", "dist/src/main.js" ]
-
-# generate prisma
